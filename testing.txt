@@ -1,0 +1,145 @@
+================================================================================
+          KỊCH BẢN THUYẾT TRÌNH DEMO TOÀN DIỆN ỨNG DỤNG QUẢN LÝ CHI TIÊU
+                              (Dự án: Expense Tracker)
+================================================================================
+
+Nhân vật trải nghiệm: NGUYỄN VĂN MINH
+Chức vụ / Nghề nghiệp: Nhân viên Kinh doanh (Sales Executive)
+Thu nhập hàng tháng: 16.200.000 VNĐ (Lương cứng: 15.000.000 VNĐ + Thưởng KPI: 1.200.000 VNĐ)
+Mục tiêu tài chính: Kiểm soát chi phí sinh hoạt, tránh thâm hụt ví, áp dụng Quy tắc 6 Hũ tài chính, trích quỹ tiết kiệm mua xe 8.000.000 VNĐ và đồng bộ bảo mật lên đám mây Firebase.
+
+--------------------------------------------------------------------------------
+PHẦN 1: MÀN HÌNH KHỞI ĐẦU & XÁC THỰC NGƯỜI DÙNG (SPLASH & AUTHENTICATION)
+--------------------------------------------------------------------------------
+
+1. Màn hình khởi đầu (Splash Screen - Loading 10s):
+   - Trải nghiệm thị giác: Hiệu ứng đồng xu bay (Flying Coins) kết hợp đồ họa động Rive (loading-ride.riv) sắc nét.
+   - Thanh tiến trình tải mượt mà (0% -> 100%), hiển thị câu châm ngôn quản lý tài chính và logo nhận diện thương hiệu.
+
+2. Đăng ký tài khoản mới (Sign Up):
+   - Thao tác: Người dùng nhập thông tin đăng ký:
+     + Họ và tên: Nguyễn Văn Minh
+     + Email: minh.sales.pro@gmail.com
+     + Mật khẩu: Minh@2026
+     + Xác nhận mật khẩu: Minh@2026
+   - Kiểm tra ràng buộc (Validation): Bắt buộc tích chọn "Đồng ý với Điều khoản dịch vụ & Chính sách bảo mật".
+   - Kết quả: Tạo tài khoản thành công, khởi tạo không gian cơ sở dữ liệu SQLite độc lập và kết nối Realtime Database trên Firebase.
+
+3. Đăng nhập (Sign In):
+   - Giao diện: Thiết kế kính mờ Glassmorphism sang trọng với hoạt ảnh nền Rive (shapes.riv).
+   - Tính năng tiện ích: Nút ẩn/hiện mật khẩu trực quan, tùy chọn Checkbox "Ghi nhớ đăng nhập".
+   - Xử lý xác thực: Đăng nhập thành công đưa người dùng vào bảng điều khiển Trang chủ ngay lập tức.
+
+--------------------------------------------------------------------------------
+PHẦN 2: THẺ SỐ DƯ & QUY TẮC 6 HŨ TÀI CHÍNH (HOME & THE 6 JARS RULE)
+--------------------------------------------------------------------------------
+
+1. Thẻ Số Dư Tổng Quan (TheSoDu):
+   - Hiển thị tài khoản Ví chính:
+     + Tổng thu nhập: +16.200.000 đ (Xanh lá cây rực rỡ).
+     + Tổng chi tiêu & Trích quỹ: -14.778.000 đ (Đỏ cam cảnh báo).
+     + Số dư khả dụng còn lại trong ví: +1.422.000 đ.
+   - Nút con mắt bảo mật (Eye Toggle): Cho phép ẩn nhanh số tiền thành "•••••••• đ" khi ở nơi công cộng.
+   - Định dạng tiền tệ: Chuẩn hóa dấu chấm phân cách hàng nghìn của Việt Nam (1.422.000 đ).
+
+2. Phân Bổ Quy Tắc 6 Hũ Tài Chính (T. Harv Eker):
+   - Cơ chế tự động: Mỗi khi có nguồn thu nhập đổ về ví, hệ thống tự động tính toán phân chia theo tỷ lệ vàng:
+     (1) Hũ Thiết yếu (55% = 8.910.000 đ): Tiền nhà trọ, điện nước, ăn uống, xăng xe.
+     (2) Hũ Tự do tài chính / Đầu tư (10% = 1.620.000 đ): Chứng khoán, tích sản, quỹ mở.
+     (3) Hũ Tiết kiệm dài hạn (10% = 1.620.000 đ): Quỹ mua sắm xe máy mới.
+     (4) Hũ Giáo dục (10% = 1.620.000 đ): Mua sách chuyên ngành, học khóa đàm phán bán hàng.
+     (5) Hũ Hưởng thụ (10% = 1.620.000 đ): Xem phim, liên hoan cùng bạn bè cuối tuần.
+     (6) Hũ Cho đi (5% = 810.000 đ): Thiệp cưới đồng nghiệp, thăm hỏi gia đình, từ thiện.
+   - Đồ họa sóng nước tương tác (Custom Wave Animation): Lượng nước trong mỗi bình hũ tự động dâng lên khi có thu nhập và vơi dần tương ứng với số tiền chi tiêu.
+   - Tùy biến tỷ lệ: Người dùng có thể kéo thả thanh Slider để điều chỉnh lại cơ cấu tỷ lệ phần trăm các hũ theo nhu cầu thực tế của bản thân.
+
+--------------------------------------------------------------------------------
+PHẦN 3: GHI CHÉP GIAO DỊCH & LOGIC KIỂM SOÁT THÔNG MINH
+--------------------------------------------------------------------------------
+
+1. Thêm Giao Dịch Mới (Transaction Entry):
+   - Thao tác nhanh: Chọn loại Thu nhập hoặc Chi tiêu.
+   - Bộ chọn ngày & giờ (Date & Time Picker 24h): Lưu chính xác thời khắc diễn ra giao dịch.
+   - Bàn phím số tự định dạng: Tự động gom nhóm hàng nghìn (ví dụ gõ 45000 -> 45.000 đ), chặn nhập số âm hoặc nhiều số 0 vô nghĩa ở đầu.
+   - Logic an toàn thông minh (Smart Guard):
+     + Người dùng không được phép ghi nhận chi tiêu nếu ví chưa từng có nguồn thu nhập nào.
+     + Cảnh báo ngay lập tức nếu khoản chi tiêu vượt quá hạn mức số dư thực tế trong ví.
+
+2. Lịch Sử & Quản Lý Giao Dịch (Transaction List):
+   - Gom nhóm dòng thời gian: Tự động gom theo "Hôm nay", "Hôm qua", ngày cụ thể kèm tổng thu/chi trong ngày.
+   - Bộ lọc đa năng:
+     + Lọc theo Tab: Tất cả / Chỉ xem Thu nhập / Chỉ xem Chi tiêu.
+     + Thanh tìm kiếm thời gian thực: Gõ tìm nhanh theo tên món đồ ("Cơm trưa", "Grab", "Xem phim") hoặc theo danh mục.
+     + Bộ lọc nâng cao (Advanced Filter Bottom Sheet): Lọc chuẩn xác từ ngày... đến ngày..., khoảng tiền từ (Min) đến (Max), hoặc theo từng danh mục cụ thể.
+
+3. Chi Tiết Giao Dịch & Xóa / Sửa (Transaction Detail):
+   - Bấm vào một giao dịch bất kỳ sẽ mở ra Hóa đơn chi tiết dạng thẻ ngân hàng.
+   - Cung cấp nút Xóa giao dịch kèm hộp thoại xác nhận AlertDialog để tránh thao tác nhầm lẫn.
+
+--------------------------------------------------------------------------------
+PHẦN 4: HỆ THỐNG CẢNH BÁO HẠN MỨC NGÂN SÁCH THỜI GIAN THỰC (REALTIME BUDGET ALERT)
+--------------------------------------------------------------------------------
+
+1. Thiết lập Hạn Mức Cho Từng Hũ / Danh Mục:
+   - Người dùng đặt ngưỡng ngân sách tối đa cho phép chi trong tháng (ví dụ: Hũ Giáo dục: 500.000 đ; Hũ Thiết yếu: 3.500.000 đ).
+   - Hỗ trợ đổi icon đại diện và đổi màu sắc nhận diện cho từng hũ.
+
+2. Cơ chế Cảnh Báo Đỏ Thời Gian Thực (Visual Realtime Warning):
+   - Khi tỷ lệ chi tiêu đạt từ 80% trở lên (ví dụ: Hũ Giáo Dục đã tiêu 480.000 đ / 500.000 đ = 96%):
+     + Toàn bộ thanh tiến trình chuyển từ màu cam/xanh sang màu ĐỎ RỰC rực rỡ.
+     + Xuất hiện huy hiệu nhấp nháy: "🚨 CẢNH BÁO >80%".
+     + Trên đầu màn hình hiển thị Banner đỏ khẩn cấp: "Đã có danh mục chi tiêu vượt 80% hạn mức ngân sách!".
+   - Giúp người dùng ngay lập tức phanh lại các khoản chi không cần thiết trước khi bị "cháy túi".
+
+--------------------------------------------------------------------------------
+PHẦN 5: BÁO CÁO THỐNG KÊ TRỰC QUAN & BIỂU ĐỒ (ANALYTICS & CHARTS)
+--------------------------------------------------------------------------------
+
+1. Thẻ Báo Cáo 3 Chỉ Số:
+   - Hiển thị trực quan: Tổng Thu | Tổng Chi | Số Dư Còn Lại.
+
+2. Biểu Đồ Tròn Tỷ Lệ Cơ Cấu (Donut Chart với CustomPainter):
+   - Vẽ phân lớp tỷ lệ phần trăm theo từng danh mục chi tiêu (Ăn uống, Đi lại, Tiền nhà, Giải trí...).
+   - Hiệu ứng hoạt ảnh (Animation) bung tròn xoay mượt mà khi người dùng mở màn hình hoặc chuyển tab.
+   - Tự động gán bảng màu tương phản khác biệt, không bị trùng màu giữa các danh mục lân cận.
+
+3. Danh Sách Phân Tích Tiến Độ (Progress Bars):
+   - Liệt kê chi tiết từng danh mục kèm số tiền tuyệt đối và tỷ lệ % đóng góp vào tổng chi tiêu.
+
+--------------------------------------------------------------------------------
+PHẦN 6: CÀI ĐẶT ỨNG DỤNG, BẢO MẬT & ĐỒNG BỘ CLOUD FIREBASE
+--------------------------------------------------------------------------------
+
+1. Quản Lý Danh Mục (Custom Categories):
+   - Cho phép thêm mới danh mục thu/chi không giới hạn: Chọn tên danh mục, lựa chọn trong bộ 16 icon phong phú và 10 bảng màu thời thượng.
+
+2. Cài Đặt Giao Diện Đêm / Ngày (Dark / Light Mode):
+   - Giao diện Sáng (Light Theme): Nền giấy cao cấp kết hợp dải màu Cam San Hô (Warm Amber/Coral) ấm cúng, sang trọng.
+   - Giao diện Tối (Dark Theme): Phong cách Ngọc Lục Bảo Sâu (Deep Emerald `#062320`) kết hợp viền kính phát sáng Neon Mint/Teal rực rỡ theo xu hướng thiết kế tương lai.
+   - Chuyển đổi trạng thái tức thì không cần khởi động lại app và tự động lưu vào CSDL.
+
+3. Menu Điều Hướng Dưới Nổi (Floating Bounce Capsule Bottom Bar):
+   - Quả bóng dạ quang nảy tưng (Bounce Effect) chạy theo ngón tay khi chuyển đổi qua lại giữa 5 tab chính.
+   - Hiệu ứng thông minh: Tab nào đang được kích hoạt thì chữ sẽ tự động ẩn đi và thay thế bằng chấm phát sáng tinh tế, tạo không gian thoáng đãng.
+   - Hiệu ứng trồi từ dưới lên (Slide Up Transition) mượt mà khi đổi trang.
+
+4. Cài Đặt Thông Báo & Nhắc Nhở Nhập Tiền Hàng Ngày (Local Notifications):
+   - Tích hợp lịch nhắc nhở tự động định kỳ vào các khung giờ vàng (trưa 12:00, tối 20:00).
+   - Nút "Gửi thông báo thử nghiệm" đẩy ngay thông báo thực tế lên thanh trạng thái (Notification Bar) của điện thoại.
+
+5. Quản Lý Dữ Liệu An Toàn & Cloud Firebase:
+   - Cơ sở dữ liệu SQLite cục bộ đảm bảo ứng dụng chạy siêu tốc, mượt mà và hoạt động tốt cả khi Offline mất mạng.
+   - Đồng bộ thời gian thực 2 chiều với Firebase Realtime Database:
+     + Nút "Sao lưu toàn bộ lên Firebase": Đóng gói mã hóa toàn bộ giao dịch, ngân sách, số dư đưa lên đám mây an toàn.
+     + Nút "Phục hồi dữ liệu từ Firebase": Tải lại toàn bộ dữ liệu khi người dùng chuyển sang sử dụng điện thoại mới.
+   - Tính năng Hệ thống nâng cao: Có thể nhập mật khẩu quản trị (pass: 0000) để nạp lại kịch bản Demo hoặc Reset toàn bộ dữ liệu về 0đ.
+
+================================================================================
+                               KẾT LUẬN & ĐÁNH GIÁ
+================================================================================
+Ứng dụng "Quản lý Chi tiêu" đáp ứng đầy đủ và vượt bậc tất cả các tiêu chí của một ứng dụng tài chính cá nhân cao cấp:
+- Giao diện hiện đại, công nghệ Glassmorphism kết hợp hoạt ảnh Rive và bảng màu Dark/Light Mode đồng bộ.
+- Nghiệp vụ tài chính vững chắc với mô hình 6 Hũ tài chính và cơ chế cảnh báo vượt ngưỡng ngân sách trực quan.
+- Kiến trúc phần mềm chuẩn mực (Clean Architecture kết hợp ChangeNotifier State Management, SQLite nội địa & Firebase Cloud Realtime Sync).
+- Sẵn sàng bàn giao và đưa vào sử dụng thực tế.
+================================================================================
